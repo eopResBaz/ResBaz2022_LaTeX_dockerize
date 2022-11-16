@@ -1,0 +1,519 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  General look and feel                              %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% indent first paragraph in a section
+\usepackage{indentfirst}
+
+\usepackage{tabularx}
+
+% various ways of formatting the titles of appendices
+\usepackage{appendix}
+
+% create macro in order to
+% renumber pages for appendices, glossary, etc.
+\newcommand{\Renumber}[1] {
+  \clearpage
+  \pagenumbering{arabic}% resets `page` counter to 1
+  \renewcommand*{\thepage}{#1\arabic{page}}
+}
+
+% width between columns
+% (use with twocolumn)
+\setlength{\columnsep}{18pt}
+
+% penalise LaTeX for hyphenating words (push them to new line instead)
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+% for lists inside of a paragraph
+% also adds enhancements
+%
+% example:
+%\begin{compactitem}[$\circ$]
+%  \item you can save some space and
+%  \item specify the symbol.
+%  \item Let me add ...
+%\end{compactitem}
+%
+\usepackage{paralist}
+
+% set up margin sizes
+% also, geometry embeds paper size for you
+\usepackage[top=2cm, bottom=1.5cm, outer=1.5cm, inner=1.5cm, heightrounded, %
+marginparwidth=2.5cm, marginparsep=2cm]{geometry}
+
+% make figure and table labels bold
+\usepackage{caption}
+% set font size of captions
+\captionsetup[figure]{font=small,labelfont={bf,normalsize}}
+\captionsetup[table]{font=small,labelfont={bf,normalsize}}
+
+% linebreak inside table cell
+% also includes formatting for column headers
+%     \thead{header name}
+% see https://tex.stackexchange.com/questions/254019/how-can-i-only-make-table-headers-center-and-bold
+\usepackage{makecell}
+\renewcommand\theadfont{\bfseries}% bold tabular headers
+\renewcommand\theadalign{cc}% centred tabular headers
+\renewcommand\theadgape{}% booktabs rules already add vertical spacing
+
+% colour cells in a table
+\usepackage{colortbl}
+
+% merge cells of a table
+\usepackage{multirow}
+
+% for converting md tables to tex
+\usepackage{longtable}
+
+% add subcaptions
+\usepackage{subcaption}
+
+% control placement for figures and captions
+% see more here: 
+% https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions
+\usepackage{float} 
+
+% rename table of contents
+\renewcommand{\contentsname}{Table of Contents}
+
+
+% underlining, strikethrough, etc
+\usepackage{ulem}
+
+% required for \begin{landscape} ... \end{landscape}
+% doesn't really work when converting from markdown however
+% \usepackage{lscape} % <--- portrait, but page doesn't render rotated
+\usepackage{pdflscape} % <--- page renders rotated
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Creating a timeline                                %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% adapted from https://tex.stackexchange.com/a/198372
+
+% e.g. year on the left (arg 1) details on the right (arg2)
+\newcommand\timeline[2]{
+\parbox[b]{10em}{\hfill{\color{uoaLightBlue}\bfseries\sffamily #1}~$\cdots\cdots$~}\makebox[0pt][c]{$\bullet$}\vrule\quad \parbox[c]{0.8\linewidth}{\vspace{7pt}\color{uoaBody}\raggedright\sffamily #2\\[7pt]}\\[-2pt]}
+
+% only details on the right (arg 1)
+\newcommand\details[1]{
+\parbox[b]{10em}{\hfill{}~}\makebox[0pt][c]{$\bullet$}\vrule\quad \parbox[c]{0.8\linewidth}{\vspace{7pt}\color{uoaBody}\raggedright\sffamily #1\\[7pt]}\\[-2pt]}
+
+% example:
+%\begin{table}[ht]
+%  \caption{Timeline caption}
+%  \begin{tabularx}{\textwidth}{l}
+%      \centering
+%      \begin{minipage}[t]{.9\linewidth}
+%          \color{gray}
+%          \rule{\linewidth}{1pt}
+%          \timeline{2019}       {beginning of pandemic}
+%          \details              {some additional details}
+%          \rule{\linewidth}{1pt}%
+%      \end{minipage}%
+%  \end{tabularx}
+%\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Including graphics                                 %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Enhanced support for graphics
+% for \includegraphics commands
+\usepackage{graphicx}
+% for including multi-page PDFs
+\usepackage{pdfpages}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  citations and bibliography                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% natbib, if you like
+%\usepackage[numbers]{natbib}
+%
+% bibLaTeX (preferred)
+%
+% why bibLaTeX instead of natbib?
+% bibLaTeX allows you to pull out fields like Title easily 
+% bibLaTeX is still being maintained
+%\usepackage[style=alphabetic,natbib=true]{biblatex}
+
+\usepackage[
+  style=apa,
+  citestyle=authoryear,
+  natbib=true,
+  backend=biber
+  ]{biblatex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  displaying code                                     %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% listings is great, but not actively maintained
+\usepackage{listings}
+\lstset{xleftmargin=2em}
+\lstset
+{ %Formatting for code in appendix
+%    language=Matlab,
+    basicstyle=\small\ttfamily,
+    stringstyle=\ttfamily,
+    numbers=left,
+    numberstyle=\small\ttfamily,
+    stepnumber=1,
+    firstnumber=1,
+    showstringspaces=false,
+    tabsize=4,
+    breaklines=true,
+    breakatwhitespace=false,
+}
+
+% caption set up for listings package
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{%
+  \parbox{\textwidth}{\colorbox{uoaLightBlue}{\parbox{0.983\linewidth}{#1#2#3}}\vskip-4pt}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+% minted is an alternative to listings
+% ensure Pygments is installed
+% sudo apt install python-pygments
+% or
+% sudo apt install python3-pygments
+%
+% it is also required to set outputdir, which makes this configuration
+% tightly coupled to the Makefile
+%
+% minted requires calls to LaTeX have the --shell-escape flag
+%
+
+% if there are different output dirs, put \usepackage directive in 
+% the main target file
+%\usepackage[outputdir=output]{minted}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  mathematical support                               %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% see https://en.wikipedia.org/wiki/AMS-LaTeX
+\usepackage{amsmath}
+% some maths symbols
+% http://milde.users.sourceforge.net/LUCR/Math/mathpackages/stmaryrd-symbols.pdf
+\usepackage{stmaryrd}
+% http://mirror.aut.ac.nz/CTAN/macros/latex/contrib/wasysym/wasysym.pdf
+\usepackage{wasysym}
+% phonetic symbols
+% https://www.tug.org/tugboat/tb17-2/tb51rei.pdf
+\usepackage{tipa}
+
+% for math font support
+% examples:
+%\begin{equation}
+%  \mathscr{E} % uses `mathrsfs`
+%  \mathcal{E}
+%  \varepsilon
+%\end{equation}
+% https://tex.stackexchange.com/questions/111599/capital-cursive-e-in-math-mode
+\usepackage{mathrsfs} % https://www.ctan.org/pkg/mathrsfs
+
+
+% for matrix support and notation
+\usepackage{amsfonts}
+\usepackage{mathtools}
+% shorthand for matrix notation
+% e.g. instead of boldface letter
+%\newcommand\mat[1]{\textbf{#1}}
+%\newcommand\mat[1]{\mathcal{#1}}
+
+% https://tex.stackexchange.com/questions/2783/bold-calligraphic-typeface
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}
+\newcommand\mat[1]{\mathbfcal{#1}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Custom colour definitions                          %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% create colour definitions more easily
+\usepackage[x11names]{xcolor} % see documentation for names
+
+\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{emerald}{rgb}{0.31, 0.78, 0.47}
+
+% brand colours adapted from
+% https://styleguide.blogs.auckland.ac.nz/brand-guidelines/brand-colours/
+\definecolor{uoablue}{RGB}{0, 70, 127}
+\definecolor{uoaLightBlue}{RGB}{87, 147, 187}
+\definecolor{uoasilver}{RGB}{141, 144, 145}
+\definecolor{uoaDarkGrey}{RGB}{51, 51, 51}
+\definecolor{uoaBody}{RGB}{74, 74, 76}
+\definecolor{uoaMidGrey}{RGB}{64, 64, 64}
+\definecolor{uoaSilverLining}{RGB}{190, 195, 196}
+
+% some other colours
+\definecolor{darkblue}{HTML}{134A6F}
+\definecolor{medblue}{HTML}{1F78B4}
+\definecolor{lightblue}{HTML}{A6CEE3}
+\definecolor{darkgreen}{HTML}{33A02C}
+\definecolor{lightgreen}{HTML}{B2DF8A}
+
+% for shadedquotation environment (below)
+\definecolor{quotebg}{HTML}{e6f4ff}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Text look and feel -- shadedquotations                   %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{framed}
+\usepackage{quoting}
+
+%\colorlet{shadecolor}{SlateGray1}
+\colorlet{shadecolor}{quotebg}
+\usepackage{lipsum}
+\newenvironment{shadedquotation}
+ {\begin{shaded*}
+  \quoting[leftmargin=0pt, vskip=0pt]
+ }
+ {\endquoting
+ \end{shaded*}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Chapter pages  and title look and  feel            %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% format section headings
+\usepackage[explicit]{titlesec}
+
+% format section headings
+% after adding uBlue, uLightBlue, uSilver,
+% these commands are probably much more complicated than they need to be
+
+\titleformat{\section}{\normalfont\Large\bfseries}{
+    \hspace{-1.5mm}\color{black} \thesection}{1em}{\color{uoablue}{#1}}
+
+\titleformat{\subsection}{\normalfont\large\bfseries}{
+    \hspace{-1.5mm}\color{black}\thesubsection}{1em}{\color{uoaLightBlue}{#1}}
+
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{
+    \hspace{-1.5mm}\color{black}\thesubsubsection}{1em}{\color{uoasilver}{#1}}
+
+
+% make chapter pages beautiful
+\makeatletter
+\def\@makechapterhead#1{%
+  %%%%\vspace*{50\p@}% %%% removed!
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        %\huge\bfseries \@chapapp\space \thechapter
+        \normalsize \huge \color{black}
+        %\flushright\normalsize \color{uoasilver}
+        \flushright\normalsize \color{uoablue}
+        \MakeUppercase{\@chapapp} \hspace{1ex}
+        \fontsize{60}{60}\selectfont\thechapter
+        \par\nobreak
+        \vskip 20\p@
+    \fi
+    \interlinepenalty\@M
+    \flushleft \color{uoaBody}
+    \Huge \bfseries #1\par\nobreak
+    \vskip 40\p@
+  }}
+\def\@makeschapterhead#1{%
+  %%%%%\vspace*{50\p@}% %%% removed!
+  {\parindent \z@ \raggedright
+    \normalfont
+    \interlinepenalty\@M
+    \Huge \bfseries  #1\par\nobreak
+    \vskip 40\p@
+  }}
+\makeatother
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Hyperlinks and references in PDF                   %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% hyperlinks within doc
+% hidelinks prevents boxes from being drawn around links
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=uoablue,
+    citecolor=uoasilver,
+    urlcolor=uoablue,
+}
+
+% Improve formatting of cross-references
+% MUST be loaded AFTER hyperref
+\usepackage{cleveref}
+
+% add section symbol to section cross-references
+% see manual of cleveref, section 8.2.1 for explanation
+\crefformat{section}{\S#2#1#3} 
+\crefformat{subsection}{\S#2#1#3}
+\crefformat{subsubsection}{\S#2#1#3}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% fancy letters to start chapter                      %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{lettrine}
+% avoid bad pagebreaks with lettrine
+\usepackage{needspace}
+% pick the font for lettrine
+\usepackage{GoudyIn}
+%\usepackage{MorrisIn}
+
+\renewcommand{\LettrineFontHook}{\color{uoablue}\GoudyInfamily{}}
+\LettrineTextFont{\itshape}
+\setcounter{DefaultLines}{3}%
+
+\newcommand{\BigLetter}[2]{%
+  \needspace{4\baselineskip}% 
+  \lettrine[lines=4]{\color{uoablue}#1}{#2}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Miscellaneous                                      %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% lorem ipsum, for showing examples
+\usepackage{lipsum}
+
+% improve font encoding 
+% and set typeface
+%
+% see more here: https://www.overleaf.com/learn/latex/font_typefaces
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\renewcommand{\sfdefault}{lmss}
+
+% custom macros
+\newcommand{\eopcomment}[1]{\textcolor{red}{#1}}
+\newcommand{\alert}[1]{\textcolor{red}{#1}}
+
+% \snippet is \texttt, except it escapes _'s automagically
+\newcommand{\snippet}[1]{\texttt{\detokenize{#1}}}
+
+% macros for typesetting \LaTeX, \BibTeX, and so on
+% this clashes with glossary...
+%\usepackage{doc}
+\DeclareRobustCommand{\BibTeX}{%
+  {\normalfont B\kern-.05em{\scshape i\kern-.025em b}\kern-.08em \TeX}%
+}
+
+% smiley faces
+% emoji
+\usepackage{tikzsymbols}
+
+% support TODO lists 
+% from https://tex.stackexchange.com/questions/247681/how-to-create-checkbox-todo-list
+\usepackage[shortlabels]{enumitem}
+\usepackage{amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontdo}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+%% Examples:
+%\begin{itemize}
+%  \item Immediate plan of action.
+%  \begin{todolist}
+%      \item[\done] Frame the problem
+%      \item Write solution
+%      \item[\wontfix] profit
+%  \end{todolist}
+%\end{itemize}
+
+
+% some commands don't work in markdown, so workaround is to add \tex{whatever}
+% example: ni\tex{\~n}o 
+\newcommand{\tex}[1]{#1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  SageTeX                                            %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% deserves its own category since there's a lot of 
+% dependencies:
+% (use apt or similar to install)
+%   cysignals-tools
+%   sagemath
+%   python-sagetex
+%   sagetex
+%
+% you will need to run `sage ${filename}.sagetex.sage'
+% and compile .tex again
+
+\usepackage{sagetex}
+
+% from overleaf's example
+\newenvironment{timebox}[1]
+    {\begin{center}
+    #1\\[1ex]
+    \begin{tabular}{|p{0.9\textwidth}|}
+    \hline\\
+    }
+    { 
+    \\\\\hline
+    \end{tabular} 
+    \end{center}
+    }
+
+
+% information on styling quotes:
+% https://www.overleaf.com/learn/latex/Typesetting_shadedquotations
+% https://tex.stackexchange.com/questions/435630/what-is-the-simplest-most-canonical-way-to-change-the-background-color-of-quote
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Slide-Deck Presentations                           %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% start document like this: 
+% \documentclass{beamer}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Draft                                              %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% uncomment one or both blocks to indicate document is a draft
+
+%% Mark drafts in page footer
+%\AtBeginDocument{%
+%	\makeevenfoot{plain}{\textit{Draft}}{\thepage}{\textit\today}
+%	\makeoddfoot{plain}{\textit{Draft}}{\thepage}{\textit\today}
+%	\makeevenfoot{myheadings}{\thepage}{\textit{Draft: \today}}{}
+%	\makeoddfoot{myheadings}{}{\textit{Draft: \today}}{\thepage}
+%	\nouppercaseheads
+%	\createmark{chapter}{both}{nonumber}{}{}
+%	\createmark{section}{right}{nonumber}{}{}
+%}
+
+%% Create "Draft" Watermark
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Draft}
+%\SetWatermarkScale{0.75}
+%\SetWatermarkColor[gray]{0.95}
