@@ -1,0 +1,147 @@
+%\documentclass[a4paper,twoside,english]{article}
+% open any -- no blank line between chapters (default is open on RHS page)
+% twocolumn -- two columns of text
+% twoside -- intended for 2 sided printing
+%\documentclass[openany,onecolumn,oneside,english]{article}
+\documentclass[openany,onecolumn,oneside,english]{memoir}
+
+\usepackage{template/eirianstyle}
+\usepackage{subfiles}
+\usepackage{multicol}  % having issues with figures
+
+% only impacts ToC because of eirianstyle.sty
+% cannot do this in article 
+%\chapterstyle{bianchi}
+%\chapterstyle{verville}
+
+% alternative, see 
+% https://tex.stackexchange.com/questions/107064/bibliographies-when-using-subfiles
+\usepackage{ifthen}
+\newboolean{printBibInSubfiles}
+\setboolean{printBibInSubfiles}{true} 
+\def\bib{\ifthenelse{\boolean{printBibInSubfiles}}
+        %{\bibliography{documentRef}} %natbib
+        {\printbibliography{}} %biblatex
+    }
+
+% bibtex
+\bibliography{documentRef}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Minutes Declarations                               %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% rename "chapter" to "minutes"
+% may have to compile twice
+% https://tex.stackexchange.com/questions/13387/how-to-get-part-name-in-latex
+
+\renewcommand*{\chaptername}{Reference}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Glossary definitions                               %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% this calls \makenoidxglossaries                     %%%
+%%% so be sure to create glossary at end of document    %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{pages/glossary}
+
+
+\usepackage{lipsum}
+
+
+%\color{uoaBody}
+\color{uoaDarkGrey}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Begin        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Document     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\setboolean{printBibInSubfiles}{false}
+
+\title{References}
+\author{Boaty McBoatface}
+\maketitle
+
+
+\pagenumbering{roman}
+
+% don't reference ToC in ToC
+\begin{KeepFromToc}
+    \tableofcontents
+\end{KeepFromToc}
+
+\newpage
+%\listoffigures
+\newpage
+\pagenumbering{arabic}
+
+
+\chapter{\citetitle{AndCri2011}}
+\subfile{pages/reference_notes/AndCri2011.tex}
+
+\chapter{\citetitle{SpeBal2014}}
+\subfile{pages/reference_notes/SpeBal2014.tex}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Appendix     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\appendix
+%\Renumber{A}
+%\appendixpage
+%\label{appendixpage}
+
+%\onecolumn
+%\subfile{pages/0A_appendices.tex}
+
+% this was duplicating adding appendix to ToC
+% if issues occur, rebuild PDF.
+%\addappheadtotoc
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Glossary     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% add in the glossary
+%\twocolumn
+\Renumber{G}
+\printnoidxglossary[nonumberlist, sort=word]
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\Renumber{B}
+\renewcommand*{\bibfont}{\footnotesize}
+
+% natbib
+%\bibliography{documentRef}
+%\bibliographystyle{IEEEtranN}
+
+% bibtex
+% if bibliography is not printing, clear the cache:
+% https://tex.stackexchange.com/questions/212540/biber-problem-in-osx-why-references-not-compiled
+% rm -rf `biber --cache`
+\printbibliography{}
+
+
+\end{document}

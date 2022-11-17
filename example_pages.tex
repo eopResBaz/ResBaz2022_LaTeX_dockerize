@@ -1,0 +1,172 @@
+% author: Boaty McBoatface
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Preamble                                           %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\documentclass[a4paper,twoside,english]{article}
+% open any -- no blank page between chapters (default is open on RHS page)
+% twocolumn -- two columns of text
+% twoside -- intended for 2 sided printing
+\documentclass[openany,onecolumn,oneside]{memoir}
+
+\usepackage{template/eirianstyle}
+\usepackage[outputdir=output]{minted}
+\usepackage{subfiles}
+\usepackage{multicol}  
+
+% chapter style for Table of Contents
+% only impacts ToC because of eirianstyle.sty overrides chapter style elsewhere
+%\chapterstyle{bianchi}
+\chapterstyle{verville}
+
+% alternative, see 
+% https://tex.stackexchange.com/questions/107064/bibliographies-when-using-subfiles
+\usepackage{ifthen}
+\newboolean{printBibInSubfiles}
+\setboolean{printBibInSubfiles}{true} 
+\def\bib{\ifthenelse{\boolean{printBibInSubfiles}}
+        %{\bibliography{documentRef}} %natbib
+        {\printbibliography{}} %biblatex
+    }
+
+% biblatex
+\bibliography{documentRef}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Chapter Declarations                               %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% rename "chapter" to "whatever", if you like
+% may have to compile twice
+% https://tex.stackexchange.com/questions/13387/how-to-get-part-name-in-latex
+%
+%\renewcommand*{\chaptername}{Entry}
+
+% rename "part" to "week"
+%\renewcommand*{\partname}{Week}
+
+% reset counters for each part, if you want
+%\@addtoreset{section}{part}
+
+% getting "Week {N}: Foo" to show in ToC is a bit tricky:
+% (see: https://tex.stackexchange.com/questions/129592/add-parts-to-the-table-of-contents)
+% need to set length, or the part title gets overrun
+%
+%\newlength\mylen
+%\renewcommand\thepart{\arabic{part}}
+%\renewcommand\cftpartpresnum{Week~}
+%\settowidth\mylen{\bfseries\cftpartpresnum\cftpartaftersnum}
+%\addtolength\cftpartnumwidth{\mylen}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Glossary definitions                               %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% this calls \makenoidxglossaries                     %%%
+%%% so be sure to create glossary at end of document    %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% uncomment line to add glossary 
+%\usepackage{pages/glossary}
+
+
+
+% text colour
+\color{uoaDarkGrey}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Begin        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Document     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\setboolean{printBibInSubfiles}{false}
+
+\title{Template Examples - Do Not Modify}
+\author{Boaty McBoatface}
+\date{Compiled on: \today }
+\maketitle
+\clearpage
+
+
+\pagenumbering{roman}
+
+% don't reference ToC in ToC
+\begin{KeepFromToc}
+    \tableofcontents
+\end{KeepFromToc}
+
+\newpage
+%\listoffigures
+\newpage
+\pagenumbering{arabic}
+
+% 2021
+%\subfile{pages/reference_notes/emails/email_2021-06-16.tex}
+
+% 2022
+\subfile{pages/00_listing_example.tex}
+\subfile{pages/00_meeting_template.tex}
+\subfile{pages/00_minted_example.tex}
+\subfile{pages/00_sageplot_example.tex}
+\subfile{pages/00_subcaption_example.tex}
+\subfile{pages/00_table_example.tex}
+\subfile{pages/00_timelinetemplate.tex}
+\subfile{pages/footnotes.tex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Appendix     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\appendix
+
+\Renumber{A}
+\appendixpage
+\label{appendixpage}
+\subfile{pages/0A_appendices.tex}
+ 
+%
+%\onecolumn
+%\subfile{pages/0A_appendices.tex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Glossary     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% add in the glossary
+%\twocolumn
+\Renumber{G}
+%\printnoidxglossary[nonumberlist, sort=word]
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\Renumber{B}
+\renewcommand*{\bibfont}{\footnotesize}
+
+% natbib
+%\bibliography{documentRef}
+%\bibliographystyle{plainnat}
+
+% biblatex
+\printbibliography{}
+
+
+\end{document}

@@ -3,7 +3,6 @@ $(eval SHELL:=/bin/bash)
 OUT = output
 INNEROUT = output
 PAGES = pages
-WEEKLY = weekly_log
 NOTES = reference_notes
 CODE = code
 IMAGES = images
@@ -12,9 +11,9 @@ TEX = document.tex
 MINUTES = minutes.tex
 THESIS = thesis.tex
 CHEATSHEET = cheatsheet.tex
-PYR = pyr.tex
 REFS = references.tex
 EXAMPLES = example_pages.tex
+WEEKLY = weekly_log
 PROJ = document
 TEMPLATE = template
 DECK = presentations
@@ -89,7 +88,7 @@ convertMD:
 	rsync -a ${DECK} ${OUT}
 	rsync -a $(PAGES) $(OUT)
 	rsync -a $(IMAGES) $(OUT)
-	rsync -a ${TEMPLATE} $(OUT)
+	rsync -a --exclude="word" ${TEMPLATE} $(OUT)
 
 	@for PAGE in $(shell find pages -name '*.md'); \
 		do \
@@ -109,7 +108,7 @@ pdf:
 	cd ${OUT}/${INNEROUT} && for f in *.sagetex.sage ; \
 		do \
 			sage $${f} ; \
-			rsync -a sage-plots* .. ; \
+			rsync -a sage-plots* .. || true ; \
 		done
 	cd $(OUT) && pdflatex --shell-escape -output-directory $(INNEROUT) $(TEX) 
 	cp $(OUT)/$(INNEROUT)/*pdf .
@@ -130,11 +129,6 @@ examples:
 	$(MAKE) TEX=${EXAMPLES} PROJ=$(shell basename ${EXAMPLES} .tex) OUT="output-$(shell basename ${EXAMPLES} .tex)" pdf
 
 
-.PHONY : pyr
-pyr:
-	$(MAKE) TEX=${PYR} PROJ=$(shell basename ${PYR} .tex) OUT="output-$(shell basename ${PYR} .tex)" pdf
-
-
 
 .PHONY : cheatsheet
 cheatsheet:
@@ -150,8 +144,11 @@ ref:
 
 .PHONY : weekly
 weekly:
-	make pdf
-	make NAME=weekly rename
+	$(MAKE) TEX=${WEEKLY}.tex PROJ=${WEEKLY} OUT="output-${WEEKLY}" pdf
+
+.PHONY : week
+week:
+	$(MAKE) TEX=${WEEKLY} OUT="output-${WEEKLY}" page
 
 
 # compile single page from weekly_log
@@ -166,10 +163,6 @@ weekly:
 # (hint: check page-word target for inspiration)
 #	$(eval FPATH := $(shell cat ${TEX} | grep subfile{.*tex} | grep -v % | grep ${PAGE} | sed 's/\\subfile{//g' | sed 's/{PAGE}.*}//g') )
 #
-# WARNING
-# this is deprecated currently, (has to do with sage)
-# should simplify `make minute` rule to override ${TEX}
-# problem is, doesn't know which main tex doc to grep through
 .PHONY : page
 page:
 	make convertMD
@@ -250,9 +243,12 @@ minute:
 .PHONY : word
 word:
 	make convertMD
+	rsync -a ${TEMPLATE} $(OUT)
 	cp ${BIB} ${OUT}
-	cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/{timebox}/{verbatim}/g' ; 
-	cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/{sagesilent}/{verbatim}/g' ; 
+	#cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/{timebox}/{verbatim}/g' ; # display raw code
+	#cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/{sagesilent}/{verbatim}/g' ; # display raw code
+	cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/{timebox}/{comment}/g' ; # suppress raw code
+	cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/{sagesilent}/{comment}/g' ; # suppress raw code
 	cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/\\sage{/\\snippet{/g' ; 
 	cd ${OUT} && find pages -type f -name "*.tex" -print0 | xargs -0 sed -i 's/\\sageplot{/\\snippet{/g' ; 
 #	for f1 in $(shell ls ${PAGES} | grep -E ^[0-9]{4}-[0-9]{2}-[0-9]{2}.tex | cut -d . -f 1); do python ${TEMPLATE}/citeTitle.py ${PAGES}/$${f1}; done
@@ -262,7 +258,7 @@ word:
 		-V documentclass=memoir \
 		-f latex \
 		-t docx \
-		--lua-filter ${TEMPLATE}/my-pagebreak.lua \
+		--lua-filter ${TEMPLATE}/word/my-pagebreak.lua \
 		$(TEX) \
 		-o ${OUT}/${PROJ}.docx \
 		--metadata link-citations=true \
@@ -300,7 +296,7 @@ page-word:
 # Create a new .tex file in the pages directory, 
 # intended to be imported as a subfile for the main tex document.
 # example usage to generate hello.tex:
-# 	make PAGE=hello page
+# 	make PAGE=hello newpage
 # without PAGE=name, it will use today's date in YYYY-MM-DD formatnew
 # example usage generating today's date:
 # 	make page
@@ -357,9 +353,7 @@ meeting:
 	$(eval TODAY := $(if $(PAGE),$(PAGE),$(shell TZ=$(TIMEZ) date +%Y-%m-%d)))
 	$(eval DIR := $(shell basename ${MINUTES} .tex))
 	cat pages/00_meeting_template.tex > $(PAGES)/$(DIR)/$(TODAY).tex;
-	cat $(PAGES)/$(DIR)/$(TODAY).tex \
-		| sed -e 's/1970-01-01/'"$$(TZ=$(TIMEZ) date +'%Y-%m-%d')/g" \
-		> $(PAGES)/$(DIR)/$(TODAY).tex;
+	echo -n $(PAGES)/$(DIR)/$(TODAY).tex | xargs -0 sed -i 's/1970-01-01/'"$$(TZ=$(TIMEZ) date +'%Y-%m-%d')/g" 
 
 
 

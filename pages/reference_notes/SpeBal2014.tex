@@ -1,0 +1,122 @@
+\documentclass[document.tex]{subfiles}
+\begin{document}
+
+%\chapter{\citetitle{SpeBal2014}}
+
+\subsection{Summary}
+Contains a summary of SNP-based measures of relatedness. 
+The text describes both coefficients and genetic similarity matrices (GSMs).
+
+\subsection{Terminology}
+\begin{itemize}
+    \item \textbf{K}: covariance matrix (I am curious if this was a typo in the article)
+    \item \textbf{GSM}: genetic similarity matrix
+\end{itemize}
+
+\subsubsection{Single-SNP Averages}
+\begin{itemize}
+    \item \textbf{$S_{Bj}$}: genotype of $B$ at at the $j^{th}$ diallelic loci, \alert{coded as 0, 1 or 2}
+    \begin{itemize}
+        \item a natural way to score the similarity of two individuals at each SNP is as the probability of a match between alleles drawn at random from each of them.
+        \item In that case matching homozygotes (0,0) or (2,2) score 1; discordant homozygotes (0,2) score 0; \textbf{while (0,1), (1,1) and (1,2) all score 0.5.}
+    \end{itemize}
+    \item \textbf{$K_{as}$}: allele sharing coefficient
+    \item \textbf{$X_B$}: a (row) vector with $j_{th}$ entry $S_{Bj}-1$
+    \item \textbf{}:
+\end{itemize}
+\begin{equation}
+    \begin{split}
+        \mat{K}_{as}(B,C) & = \frac{1}{2} + \frac{1}{2m} \sum\limits_{j=1}^m (S_{Bj}-1)(S_{Cj}-1) \\
+                    & = \frac{1}{2} + \frac{1}{2m} \sum\limits_{j=1}^m (X_B)(X_C^\text{T})
+    \end{split}
+\end{equation}
+
+The corresponding GSM is then: 
+\begin{equation}
+    \begin{split}
+        \mat{G} & = \frac{(1 + \frac{XX^\text{T}}{m})}{2}
+    \end{split}
+\end{equation}
+
+Where 
+\begin{itemize}
+    \item $m$ is the number of SNPs
+    \item $\mat{X}$ is a genotype matrix with row $B$ equal to $X_B$.
+    \item The range of $K_{as}$ depends on the MAF spectrum of the SNPs
+    \item $\mat{K}_{as}(B,B) = \frac{(1 + hB)}{2}$, where $h_B$ denotes the homozygosity of B
+    \item $\mat{K}_{as}$ can be interpreted as average mutation-sense IBD under the assumption 
+    that IBS implies IBD, which is reasonable for SNPs given their low mutation rate.
+\end{itemize}
+
+
+\textbf{Many authors prefer to score matching heterozygotes as 1 rather than 0.5}, 
+resulting in the following allele-sharing similarity, which has $\mat{K}_{as}'(B,B) = 1$:
+
+\begin{equation}
+    \begin{split}
+        \mat{K}_{as}'(B,C) & = 1 - \frac{1}{2m} \sum\limits_{j=1}^{m} |S_{Bj}-S_{Cj}|
+    \end{split}
+\end{equation}
+
+$\mat{K}_{as}$ and $\mat{K}_{as}'$ give all SNPs equal weight, 
+irrespective of MAFs, which has the advantage of avoiding estimation of 
+population MAF values. However, the lower the MAF the greater the evidence 
+for a recent common ancestor, which suggests giving more weight to 
+rare shared alleles. 
+\textbf{One step in this direction is to centre the genotype scores.} 
+If $p_j$ is the population MAF at the $j^{th}$ SNP, 
+and now defining $X_B$ as having entries $S_{Bj} - 2p_j$, then 
+we can \textbf{define the centred coefficient} as follows:
+
+\begin{equation}
+    \begin{split}
+        \mat{K}_{c0} & = \frac{1}{m} \sum\limits_{j=1}^{m} (S_{Bj}-2p_j)(S_{Cj}-2p_j)^\text{T} \\
+                    & = \frac{1}{m} \sum\limits_{j=1}^{m} \frac{XX^\text{T}}{m}
+    \end{split}
+\end{equation}
+
+The corresponding GSM is then: 
+\begin{equation}
+    \begin{split}
+        \mat{G} & = \frac{XX^\text{T}}{m}
+    \end{split}
+\end{equation}
+
+Some authors use $2\sum\limits_{j=1}^m p_j(1-p_j)$ in place of $m$ in the 
+denominator, so that $\mat{K}_{c0}(B,B) \approx 1$ if B is outbred.
+
+Unlike $\mat{K}_{as}$ and $\mat{K}_{as}'$, the value of $\mat{K}_{c0}$
+can be negative, and htis must frequently occur if the $p_j$ are estimated 
+from the same data, as then $\mat{K}_{c0}$ measures the excess of 
+deficit of allele sharing from that expected under a random assignment 
+of alleles.
+
+In addition to centring, it is common to standardise, which assumes 
+each SNP to be equally informative, leading to the following 
+definition:
+
+\begin{equation}
+    \begin{split}
+        \mat{K}_{c0}               & = \frac{1}{m} \sum\limits_{j=1}^{m} \frac{X_BX_C^\text{T}}{m} \\
+        \text{where } \mat{X}_{Bj} & = \frac{S_{Bj} - 2p_j}{\sqrt{2p_j(1-p_j)}}
+    \end{split}
+\end{equation}
+
+
+$\mat{K}_{c-1}(B,C)$ is an average over SNPs of an estimator of an 
+allelic correlation coefficient. It is 
+\textbf{the basis of principal component methods} 
+to adjust for population structure in association studies.
+
+%\subsubsection{Background}
+%\subsubsection{Research Questions}
+%\subsubsection{Existing Work}
+%\subsubsection{Contributions}
+%\subsubsection{Impact}
+%
+%\subsection{Questions, Thoughts, and Relation to my research}
+%
+%\subsection{Notes}
+%
+%\bib{}
+\end{document}

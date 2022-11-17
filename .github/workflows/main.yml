@@ -1,0 +1,29 @@
+name: Build LaTeX document
+on: [push]
+jobs:
+    compilepdf:
+        name: Compile main PDF document
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out the repo
+            uses: actions/checkout@v2
+            with:
+              clean: false
+          - name: Run the build process with Docker
+            uses: addnab/docker-run-action@v3
+            with:
+                image: ghcr.io/eirianop/dockerresbaz2022:latest
+                options: -v ${{ github.workspace }}:/results
+                run: |
+                    make cheatsheet
+                    make pdf
+          - name: Upload cheatsheet.pdf file 
+            uses: actions/upload-artifact@v3
+            with:
+              name: cheatsheet.pdf
+              path: cheatsheet.pdf
+          - name: Upload document.pdf file 
+            uses: actions/upload-artifact@v3
+            with:
+              name: document.pdf
+              path: document.pdf

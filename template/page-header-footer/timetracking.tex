@@ -1,0 +1,175 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Boiler plate -- copied each time for               %%%
+%%%                  reproducibility                    %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{sagesilent}
+    reset() # clear any existing variables
+
+    # boiler plate set up -- do not modify
+    class TimeTracker:
+        # all time in hours
+        def __init__(self):
+            self._all_time = {}
+            self._one_week = 37.5 # number of hours per week
+            self._FTE = None # e.g. 0.5, 1.0
+
+        def addTime(self, key, value):
+            if key in self._all_time:
+                self._all_time[key] = value + self._all_time[key]
+            else:
+                self._all_time[key] = value
+
+        def setFTE(self, value):
+            self._FTE = value
+
+        def setMaxHours(self, hours):
+            # set number of hours alotted per week 
+            # rather than deducing by FTE and a typical week (37.5 hours)
+            self._one_week = hours
+            self._FTE = 1
+
+        def getMaxHours(self):
+            # maximum hours per week
+            if not self._FTE:
+                return 0
+            return (self._one_week * self._FTE)
+
+        def cumulativeTime(self):
+            thesum = 0
+            for item in self._all_time:
+                thesum = thesum + self._all_time[item]
+            return thesum
+
+        def timeFor(self, key):
+            if key in self._all_time:
+                return self._all_time[key]
+            else: return 0
+
+        def totalStr(self):
+            return str(self.cumulativeTime().n(digits=2)) + "/" + str(self.getMaxHours().n(digits=2))
+
+        def totalPercent(self):
+            maxHours = 1
+            if self.getMaxHours() != 0:
+                maxHours = self.getMaxHours()
+            return str((self.cumulativeTime() / maxHours * 100).n(digits=2))
+\end{sagesilent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Set up variables                                   %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{sagesilent}
+    # set up my work items 
+    # keep time in hours for now
+    totalWeeklyHours = 37.5
+
+    reading  = TimeTracker()
+    reading.setFTE(0.4)
+    coding   = TimeTracker()
+    coding.setFTE(0.4)
+    writing  = TimeTracker()
+    writing.setFTE(0.2)
+
+    extra    = TimeTracker()
+    extra.setMaxHours(2)
+    overhead = TimeTracker()
+    overhead.setMaxHours(2)
+
+    # keys
+    meetings = "meetings"
+    goals  = "goals"
+    other = "other"
+\end{sagesilent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Weekly Notes                                       %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   1 January
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{1 January}
+
+\subsection{Daily Goals}
+\begin{todolist}
+    \item
+\end{todolist}
+
+
+\begin{minted}[tabsize=2,breaklines]{text}
+\end{minted}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Start time tracking! (examples below)              %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{sagesilent}
+    # my dedicated days are Monday / Thursday / Friday
+    # (but feel free to split time across the week)
+
+    # Jan 1  - Monday    - 7   hours  (aim for cumulative)
+    reading.addTime(goals, 1 )      # example daily goal
+
+    # Jan 2  - Tuesday   - 15 hours   (aim for cumulative)
+    # Jan 3  - Wednesday - 22.5 hours (aim for cumulative)
+
+    # Jan 4  - Thursday  - 30 hours   (aim for cumulative)
+    writing.addTime(goals, 3)       # example thesis writing
+
+    # Jan 5  - Friday    - 37.5 hours (aim for cumulative)
+    overhead.addTime(meetings, 1 )  # example meeting
+
+\end{sagesilent}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%  Print summary for the week (examples below)        %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\clearpage
+%\section{Time Tracking}
+%\begin{sagesilent}
+%    
+%    # Totals
+%    allActivities = [reading, coding, writing, extra, overhead]
+%    totalTime = sum([x.cumulativeTime() for x in allActivities])
+%\end{sagesilent}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%  Time Tracking                                      %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{timebox}{Activities}
+%    \timeline{Reading}          {$\sage{reading.totalStr()}$ hours,
+%                               $\sage{reading.totalPercent()}$ \%}
+%    \timeline{Coding}          {$\sage{coding.totalStr()}$ hours,
+%                               $\sage{coding.totalPercent()}$ \%}
+%    \timeline{Writing}          {$\sage{writing.totalStr()}$ hours,
+%                                 $\sage{writing.totalPercent()}$ \%}
+%    \timeline{Overhead}          {$\sage{overhead.totalStr()}$ hours,
+%                               $\sage{overhead.totalPercent()}$ \%}
+%  \end{timebox}
+%  
+%  
+%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  %%%  Grand Totals -- Time Tracking                      %%%
+%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  
+%  % grand totals
+%  \begin{timebox}{Total Hours}
+%    \timeline{Grand Total}    {$\sage{totalTime.n(digits=4)}$ hours}
+%    \timeline{Percent Total}  {$\sage{(totalTime / totalWeeklyHours * 100).n(digits=4)}$ \%}
+%  \end{timebox}
+  
+  
+
+
+\subsection{Notes}

@@ -1,0 +1,26 @@
+\documentclass[document.tex]{subfiles}
+\begin{document}
+
+\chapter{Including Code with Minted}
+
+\subsection{my-pagebreak.lua}
+% example including code from another file
+\inputminted[linenos,tabsize=2,breaklines]{lua}{code/my-pagebreak.lua}
+
+\subsection{automoderator.yaml}
+% example including code pasted in directly
+% Reddit automod configuration rule
+\begin{minted}[linenos,tabsize=2,breaklines]{yaml}
+    ---
+
+    # Remove Affiliate Links
+    # Automatically removes Amazon affiliate links.
+    standard: amazon affiliate links
+    action: remove
+    action_reason: 'Amazon affiliate link'
+
+\end{minted}
+
+
+\bib{}
+\end{document}
