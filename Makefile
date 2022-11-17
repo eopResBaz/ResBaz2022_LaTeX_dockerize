@@ -82,7 +82,7 @@ convertMD:
 	mkdir -p ${OUT}
 	mkdir -p ${OUT}/${INNEROUT}
 	make source
-	cp ${TEX} ${OUT}
+	cp *tex ${OUT}
 	cp ${BIB} ${OUT}/${INNEROUT}
 	cp ${BIB} ${OUT}
 	rsync -a ${DECK} ${OUT}
@@ -129,12 +129,9 @@ examples:
 	$(MAKE) TEX=${EXAMPLES} PROJ=$(shell basename ${EXAMPLES} .tex) OUT="output-$(shell basename ${EXAMPLES} .tex)" pdf
 
 
-
 .PHONY : cheatsheet
 cheatsheet:
 	$(MAKE) TEX=${CHEATSHEET} PROJ=$(shell basename ${CHEATSHEET} .tex) OUT="output-$(shell basename ${CHEATSHEET} .tex)" pdf
-
-
 
 
 .PHONY : ref
@@ -146,10 +143,16 @@ ref:
 weekly:
 	$(MAKE) TEX=${WEEKLY}.tex PROJ=${WEEKLY} OUT="output-${WEEKLY}" pdf
 
+
+# -------
+
 .PHONY : week
 week:
 	$(MAKE) TEX=${WEEKLY} OUT="output-${WEEKLY}" page
 
+.PHONY : week-word
+week-word:
+	$(MAKE) TEX=${WEEKLY} OUT="output-${WEEKLY}" page-word
 
 # compile single page from weekly_log
 #
@@ -278,20 +281,31 @@ word:
 # 	make PAGE=2020-12-07 page-word
 page-word:
 	make convertMD
+	$(eval TMPFILE := TEMP_${PAGE})
+	$(eval TEX := ${WEEKLY}.tex)
+	echo ${TMPFILE}
+	echo ${TEX}
+
+	$(eval CHAP := $(shell cat ${TEX} | grep subfile{.*tex} | grep -v % | nl | grep ${PAGE} | cut -f 1 | grep -oP [0-9]+))
+	$(eval CHAP := $(shell expr ${CHAP} - 1))
+	$(eval CHAP := $(if $(CHAP),$(CHAP),0))
 	$(eval FPATH := $(shell cat ${TEX} | grep subfile{.*tex} | grep -v % | grep ${PAGE} | sed 's/\\subfile{//g' | sed 's/${PAGE}.*}//g'))
-	cp ${BIB} ${OUT}
-	cd ${OUT} && cp ${FPATH}/${PAGE}.tex ${OUT}/${PAGE}.tex
+	mkdir -p ${OUT}/${FPATH}
+	cd ${OUT} && echo "\AtBeginDocument{\setcounter{chapter}{${CHAP}}}" > ${FPATH}/${TMPFILE}.tex
+	cd ${OUT} && cat ${FPATH}/${PAGE}.tex >> ${FPATH}/${TMPFILE}.tex
+	cd ${OUT} && cat ${FPATH}/${TMPFILE}.tex > ${INNEROUT}/${PAGE}.tex
+
 #	cd ${OUT} && python ${TEMPLATE}/citeTitle.py ${PAGE}
 	cd ${OUT} && pandoc \
-		${OUT}/${PAGE}.tex \
-		-o ${OUT}/${PAGE}.docx \
+		${INNEROUT}/${PAGE}.tex \
+		-o ${INNEROUT}/${PAGE}.docx \
 		--metadata link-citations=true \
 		--metadata backtick_code_blocks=true \
 		--metadata reference-section-title=Bibliography \
 		--biblio=$(BIB) \
 		--citeproc 
 #		--reference-doc=template/word/UoAThesisTemplate-UnNumbered.dotm
-	cp $(OUT)/$(OUT)/${PAGE}.docx .
+	cp $(OUT)/$(INNEROUT)/${PAGE}.docx .
 
 # Create a new .tex file in the pages directory, 
 # intended to be imported as a subfile for the main tex document.
