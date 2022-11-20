@@ -18,8 +18,8 @@ RUN apt -y install rsync
 COPY notebook2022-tools /tools
 
 # pick your architecture
-#RUN dpkg -i /tools/pandoc-2.18-1-amd64.deb
-RUN dpkg -i /tools/pandoc-2.18-1-arm64.deb
+RUN dpkg -i /tools/pandoc-2.18-1-amd64.deb
+#RUN dpkg -i /tools/pandoc-2.18-1-arm64.deb
 
 WORKDIR /results
 ENTRYPOINT ["/usr/bin/make"]
