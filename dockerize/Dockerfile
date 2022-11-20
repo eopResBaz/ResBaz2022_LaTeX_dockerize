@@ -16,7 +16,10 @@ RUN apt -y install bsdmainutils
 RUN apt -y install rsync
 
 COPY notebook2022-tools /tools
-RUN dpkg -i /tools/*deb
+
+# pick your architecture
+#RUN dpkg -i /tools/pandoc-2.18-1-amd64.deb
+RUN dpkg -i /tools/pandoc-2.18-1-arm64.deb
 
 WORKDIR /results
 ENTRYPOINT ["/usr/bin/make"]
