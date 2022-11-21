@@ -148,7 +148,7 @@ weekly:
 
 .PHONY : week
 week:
-	$(MAKE) TEX=${WEEKLY} OUT="output-${WEEKLY}" page
+	$(MAKE) TEX=${WEEKLY}.tex OUT="output-${WEEKLY}" page
 
 .PHONY : week-word
 week-word:
